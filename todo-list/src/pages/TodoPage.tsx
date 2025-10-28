@@ -1,4 +1,17 @@
-import { CalendarDays } from 'lucide-react';
+import { Card, CardContent } from '@/components/ui/card';
+import {
+  CalendarDays,
+  CheckCircle2,
+  Clock4,
+  AlertTriangle,
+} from 'lucide-react';
+
+const STATS = [
+  { label: '전체', value: 5, icon: CalendarDays },
+  { label: '완료', value: 1, icon: CheckCircle2 },
+  { label: '진행중', value: 4, icon: Clock4 },
+  { label: '지연', value: 4, icon: AlertTriangle },
+];
 
 function formatKoreanDate(d: Date) {
   const y = d.getFullYear();
@@ -26,7 +39,22 @@ export default function ReaddyTodoPage() {
         </div>
       </header>
       <main className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-6">
-        내용 준비 중…
+        <section className="flex flex-wrap gap-4">
+          {STATS.map((s, i) => (
+            <Card
+              key={i}
+              className="rounded-2xl shadow-sm flex-1 min-w-[180px]"
+            >
+              <CardContent className="p-4 flex items-center justify-between">
+                <div className="text-slate-500 text-sm">{s.label}</div>
+                <div className="flex items-center gap-2">
+                  <s.icon className="h-4 w-4 text-slate-400" />
+                  <div className="text-xl font-semibold">{s.value}</div>
+                </div>
+              </CardContent>
+            </Card>
+          ))}
+        </section>
       </main>
     </div>
   );
