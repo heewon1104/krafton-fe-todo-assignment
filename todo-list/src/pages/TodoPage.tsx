@@ -1,10 +1,20 @@
 import { Card, CardContent } from '@/components/ui/card';
+import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Separator } from '@/components/ui/separator';
+import { Button } from '@/components/ui/button';
 import {
   CalendarDays,
   CheckCircle2,
   Clock4,
   AlertTriangle,
+  Plus,
 } from 'lucide-react';
+
+const FILTERS = [
+  { key: 'all', label: '전체' },
+  { key: 'progress', label: '진행중' },
+  { key: 'done', label: '완료' },
+];
 
 const STATS = [
   { label: '전체', value: 5, icon: CalendarDays },
@@ -54,6 +64,28 @@ export default function ReaddyTodoPage() {
               </CardContent>
             </Card>
           ))}
+        </section>
+        <section className="mt-6 flex items-center justify-between">
+          <div className="flex items-center gap-3">
+            <h2 className="text-lg font-semibold">할 일 목록</h2>
+            <Separator orientation="vertical" className="h-5" />
+            <Tabs value="all">
+              <TabsList className="rounded-full">
+                {FILTERS.map((f) => (
+                  <TabsTrigger
+                    key={f.key}
+                    value={f.key}
+                    className="rounded-full px-4"
+                  >
+                    {f.label}
+                  </TabsTrigger>
+                ))}
+              </TabsList>
+            </Tabs>
+          </div>
+          <Button className="rounded-full" size="sm">
+            <Plus className="mr-1 h-4 w-4" /> 추가
+          </Button>
         </section>
       </main>
     </div>
