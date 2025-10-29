@@ -23,7 +23,7 @@ export default defineConfig([
           './tsconfig.node.json',
           './tsconfig.test.json',
         ],
-        tsconfigRootDir: __dirname,
+        tsconfigRootDir: import.meta.dirname,
       },
       globals: globals.browser,
       ecmaVersion: 'latest',
