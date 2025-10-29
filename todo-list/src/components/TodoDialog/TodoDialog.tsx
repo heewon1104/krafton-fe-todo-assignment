@@ -39,10 +39,13 @@ export default function TodoDialog({ open, onOpenChange }: TodoDialogProps) {
 
           <div className="flex-1 overflow-y-auto p-6 space-y-4">
             <div className="space-y-2">
-              <label className="text-sm font-medium">마감일 *</label>
+              <label className="text-sm font-medium" htmlFor="dueDate">
+                마감일 *
+              </label>
               <Popover>
                 <PopoverTrigger asChild>
                   <Button
+                    id="dueDate"
                     variant="outline"
                     className="w-full justify-start text-left font-normal"
                   >
@@ -63,9 +66,11 @@ export default function TodoDialog({ open, onOpenChange }: TodoDialogProps) {
             </div>
 
             <div className="space-y-2">
-              <label className="text-sm font-medium">우선순위</label>
+              <label className="text-sm font-medium" htmlFor="priority">
+                우선순위
+              </label>
               <Select defaultValue="중간">
-                <SelectTrigger className="w-full">
+                <SelectTrigger id="priority" className="w-full">
                   <SelectValue placeholder="선택" />
                 </SelectTrigger>
                 <SelectContent>
@@ -77,13 +82,15 @@ export default function TodoDialog({ open, onOpenChange }: TodoDialogProps) {
             </div>
 
             <div className="space-y-2">
-              <label className="text-sm font-medium">제목 *</label>
-              <Input placeholder="제목" />
+              <label className="text-sm font-medium" htmlFor="title" />
+              <Input id="title" placeholder="제목" />
             </div>
 
             <div className="space-y-2">
-              <label className="text-sm font-medium">내용</label>
-              <Textarea maxLength={500} rows={10} />
+              <label className="text-sm font-medium" htmlFor="content">
+                내용
+              </label>
+              <Textarea id="content" maxLength={500} rows={10} />
               <div className="text-xs text-slate-500">0/500</div>
             </div>
           </div>
