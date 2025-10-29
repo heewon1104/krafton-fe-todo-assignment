@@ -1,7 +1,7 @@
 import { create } from 'zustand';
 import { subscribeWithSelector } from 'zustand/middleware';
 import { liveQuery } from 'dexie';
-import { getDB } from '@/db/dbconnection';
+import { getDB } from '@/db/dbConnection';
 import type { Todo, FilterKey } from '@/types/todo';
 import { addTodo, updateTodo, removeTodo } from '@/db/todoRepo';
 

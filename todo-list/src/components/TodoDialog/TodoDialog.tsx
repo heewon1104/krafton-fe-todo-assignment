@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useTodoStore } from '@/stores/todoStore';
 import {
   Dialog,
@@ -23,16 +23,25 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
+import type { Todo } from '@/types/todo';
 import { Calendar as CalendarIcon, CircleCheck } from 'lucide-react';
-import { format } from 'date-fns';
+import { format, parse } from 'date-fns';
 
-export type TodoDialogProps = {
+type TodoDialogProps = {
   open: boolean;
   onOpenChange: (v: boolean) => void;
+  mode?: 'create' | 'edit';
+  item?: Todo;
 };
 
-export default function TodoDialog({ open, onOpenChange }: TodoDialogProps) {
+export default function TodoDialog({
+  open,
+  onOpenChange,
+  mode = 'create',
+  item,
+}: TodoDialogProps) {
   const create = useTodoStore((s) => s.create);
+  const patch = useTodoStore((s) => s.patch);
 
   const [title, setTitle] = useState('');
   const [desc, setDesc] = useState('');
@@ -49,29 +58,50 @@ export default function TodoDialog({ open, onOpenChange }: TodoDialogProps) {
     낮음: 'green',
   };
 
+  useEffect(() => {
+    if (mode === 'edit' && item) {
+      setTitle(item.title);
+      setDesc(item.desc);
+      setPriority(item.priority);
+      setDue(
+        item.date ? parse(item.date, 'yyyy. M. d.', new Date()) : undefined
+      );
+    } else {
+      setTitle('');
+      setDesc('');
+      setPriority('중간');
+      setDue(undefined);
+    }
+  }, [mode, item, open]);
+
   async function onSubmit(e: React.FormEvent) {
     e.preventDefault();
-    if (!title.trim()) return;
-    if (!due) return;
+    if (!title.trim() || !due) return;
 
-    await create({
-      title: title.trim(),
-      desc: desc.trim(),
-      priority,
-      date: format(due, 'yyyy. M. d.'),
-      tone: toneByPriority[priority],
-      done: false,
-    });
-
-    setTitle('');
-    setDesc('');
-    setPriority('중간');
-    setDue(undefined);
-
+    if (mode === 'edit' && item) {
+      await patch(item.id, {
+        title: title.trim(),
+        desc: desc.trim(),
+        priority,
+        date: format(due, 'yyyy. M. d.'),
+        tone: toneByPriority[priority],
+      });
+    } else {
+      await create({
+        title: title.trim(),
+        desc: desc.trim(),
+        priority,
+        date: format(due, 'yyyy. M. d.'),
+        tone: toneByPriority[priority],
+        done: false,
+      });
+    }
     onOpenChange(false);
   }
 
   const descCount = desc.length;
+  const titleText = mode === 'edit' ? 'TODO 수정' : 'TODO 생성';
+  const submitText = mode === 'edit' ? '수정' : '생성';
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
@@ -83,7 +113,7 @@ export default function TodoDialog({ open, onOpenChange }: TodoDialogProps) {
           }}
         >
           <DialogHeader className="p-6 border-b">
-            <DialogTitle>TODO 수정</DialogTitle>
+            <DialogTitle>{titleText}</DialogTitle>
           </DialogHeader>
 
           <div className="flex-1 overflow-y-auto p-6 space-y-4">
@@ -183,7 +213,7 @@ export default function TodoDialog({ open, onOpenChange }: TodoDialogProps) {
               취소
             </Button>
             <Button type="submit">
-              <CircleCheck className="mr-1 h-4 w-4" /> 수정
+              <CircleCheck className="mr-1 h-4 w-4" /> {submitText}
             </Button>
           </DialogFooter>
         </form>

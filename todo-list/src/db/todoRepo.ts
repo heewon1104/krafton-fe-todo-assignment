@@ -1,4 +1,4 @@
-import { getDB } from '@/db/dbconnection';
+import { getDB } from '@/db/dbConnection';
 import type { Todo } from '@/types/todo';
 
 // Create

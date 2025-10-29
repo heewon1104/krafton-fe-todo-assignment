@@ -1,11 +1,13 @@
 import TodoItem from '@/components/TodoList/TodoItem';
 import { useTodoStore } from '@/stores/todoStore';
+import type { Todo } from '@/types/todo';
 
 type TodoListProps = {
-  setOpen: React.Dispatch<React.SetStateAction<boolean>>;
+  onView: (todo: Todo) => void;
+  onEdit: (todo: Todo) => void;
 };
 
-export default function TodoList({ setOpen }: TodoListProps) {
+export default function TodoList({ onView, onEdit }: TodoListProps) {
   const todos = useTodoStore((s) => s.todos);
   const filter = useTodoStore((s) => s.filter);
   const loading = useTodoStore((s) => s.loading);
@@ -32,7 +34,8 @@ export default function TodoList({ setOpen }: TodoListProps) {
         <TodoItem
           key={item.id}
           item={item}
-          onEdit={() => setOpen(true)}
+          onView={onView}
+          onEdit={onEdit}
           onDelete={(id) => void del(id)}
           onToggle={(id, nextDone) => void patch(id, { done: nextDone })}
         />
