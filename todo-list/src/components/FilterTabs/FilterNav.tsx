@@ -2,20 +2,17 @@ import { Separator } from '@/components/ui/separator';
 import { Button } from '@/components/ui/button';
 import FilterTabs from '@/components/FilterTabs/FilterTabs';
 import { FILTERS } from '@/constants/constants';
-import type { FilterKey } from '@/types/todo';
+import { useTodoStore } from '@/stores/todoStore';
 import { Plus } from 'lucide-react';
 
 type FilterNavProps = {
-  filter: FilterKey;
-  setFilter: React.Dispatch<React.SetStateAction<FilterKey>>;
   setOpen: React.Dispatch<React.SetStateAction<boolean>>;
 };
 
-export default function FilterNav({
-  filter,
-  setFilter,
-  setOpen,
-}: FilterNavProps) {
+export default function FilterNav({ setOpen }: FilterNavProps) {
+  const filter = useTodoStore((s) => s.filter);
+  const setFilter = useTodoStore((s) => s.setFilter);
+
   return (
     <section className="mt-6 flex items-center justify-between">
       <div className="flex items-center gap-3">

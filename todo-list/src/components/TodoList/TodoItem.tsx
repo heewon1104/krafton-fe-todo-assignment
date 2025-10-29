@@ -3,20 +3,26 @@ import { Checkbox } from '@/components/ui/checkbox';
 import { Badge } from '@/components/ui/badge';
 import { Calendar as CalendarIcon, Pencil, Trash2 } from 'lucide-react';
 import type { Todo } from '@/types/todo';
+import type { CheckedState } from '@radix-ui/react-checkbox';
 
-export default function TodoCard({
+type TodoCardProps = {
+  item: Todo;
+  onView: (item: Todo) => void;
+  onEdit: (item: Todo) => void;
+  onDelete: (id: number) => void;
+  onToggle: (id: number, nextDone: boolean) => void;
+};
+
+export default function TodoItem({
   item,
+  onView,
   onEdit,
   onDelete,
   onToggle,
-}: {
-  item: Todo;
-  onEdit: (id: number) => void;
-  onDelete: (id: number) => void;
-  onToggle: (id: number) => void;
-}) {
+}: TodoCardProps) {
   return (
     <article
+      onClick={() => onView(item)}
       className={[
         'group relative rounded-2xl bg-white shadow-sm ring-1 ring-slate-200 p-4',
         'w-full md:w-1/2 lg:w-1/3',
@@ -33,7 +39,15 @@ export default function TodoCard({
         <div className="pt-1">
           <Checkbox
             checked={item.done}
-            onCheckedChange={() => onToggle(item.id)}
+            onCheckedChange={(checked: CheckedState) => {
+              const nextDone = checked === true;
+              onToggle(item.id, nextDone);
+            }}
+            onClick={(e) => e.stopPropagation()}
+            onPointerDown={(e) => e.stopPropagation()}
+            onKeyDown={(e) => {
+              if (e.key === ' ' || e.key === 'Enter') e.stopPropagation();
+            }}
             aria-label="완료 체크"
           />
         </div>
@@ -49,7 +63,10 @@ export default function TodoCard({
                 variant="ghost"
                 size="icon"
                 className="h-7 w-7"
-                onClick={() => onEdit(item.id)}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  onEdit(item);
+                }}
               >
                 <Pencil className="h-4 w-4" />
               </Button>
@@ -57,7 +74,10 @@ export default function TodoCard({
                 variant="ghost"
                 size="icon"
                 className="h-7 w-7"
-                onClick={() => onDelete(item.id)}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  onDelete(item.id);
+                }}
               >
                 <Trash2 className="h-4 w-4" />
               </Button>
