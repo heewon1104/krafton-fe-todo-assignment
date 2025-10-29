@@ -3,18 +3,21 @@ import { Checkbox } from '@/components/ui/checkbox';
 import { Badge } from '@/components/ui/badge';
 import { Calendar as CalendarIcon, Pencil, Trash2 } from 'lucide-react';
 import type { Todo } from '@/types/todo';
+import type { CheckedState } from '@radix-ui/react-checkbox';
 
-export default function TodoCard({
+type TodoCardProps = {
+  item: Todo;
+  onEdit: (item: Todo) => void;
+  onDelete: (id: number) => void;
+  onToggle: (id: number, nextDone: boolean) => void;
+};
+
+export default function TodoItem({
   item,
   onEdit,
   onDelete,
   onToggle,
-}: {
-  item: Todo;
-  onEdit: (id: number) => void;
-  onDelete: (id: number) => void;
-  onToggle: (id: number) => void;
-}) {
+}: TodoCardProps) {
   return (
     <article
       className={[
@@ -33,7 +36,10 @@ export default function TodoCard({
         <div className="pt-1">
           <Checkbox
             checked={item.done}
-            onCheckedChange={() => onToggle(item.id)}
+            onCheckedChange={(checked: CheckedState) => {
+              const nextDone = checked === true;
+              onToggle(item.id, nextDone);
+            }}
             aria-label="완료 체크"
           />
         </div>
@@ -49,7 +55,7 @@ export default function TodoCard({
                 variant="ghost"
                 size="icon"
                 className="h-7 w-7"
-                onClick={() => onEdit(item.id)}
+                onClick={() => onEdit(item)}
               >
                 <Pencil className="h-4 w-4" />
               </Button>

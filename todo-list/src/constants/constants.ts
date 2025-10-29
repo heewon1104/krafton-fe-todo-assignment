@@ -1,23 +1,10 @@
 import type { Filter } from '@/types/todo';
-import {
-  CalendarDays,
-  CheckCircle2,
-  Clock4,
-  AlertTriangle,
-} from 'lucide-react';
-import type { Stat, Todo } from '@/types/todo';
+import type { Todo } from '@/types/todo';
 
 export const FILTERS: Filter[] = [
   { key: 'all', label: '전체' },
   { key: 'progress', label: '진행중' },
   { key: 'done', label: '완료' },
-];
-
-export const STATS: Stat[] = [
-  { label: '전체', value: 5, icon: CalendarDays },
-  { label: '완료', value: 1, icon: CheckCircle2 },
-  { label: '진행중', value: 4, icon: Clock4 },
-  { label: '지연', value: 4, icon: AlertTriangle },
 ];
 
 export const TODOS: Todo[] = [
