@@ -24,10 +24,10 @@ export default function StatsCards() {
   }).length;
 
   const stats = [
-    { label: '전체', value: total, icon: CalendarDays },
-    { label: '완료', value: done, icon: CheckCircle2 },
-    { label: '진행중', value: progress, icon: Clock4 },
-    { label: '지연', value: late, icon: AlertTriangle },
+    { label: '전체', value: total, icon: CalendarDays, tone: 'blue' },
+    { label: '완료', value: done, icon: CheckCircle2, tone: 'green' },
+    { label: '진행중', value: progress, icon: Clock4, tone: 'orange' },
+    { label: '지연', value: late, icon: AlertTriangle, tone: 'red' },
   ];
 
   return (
@@ -35,10 +35,12 @@ export default function StatsCards() {
       {stats.map((s, i) => (
         <Card key={i} className="rounded-2xl shadow-sm flex-1 min-w-[180px]">
           <CardContent className="p-4 flex items-center justify-between">
-            <div className="text-slate-500 text-sm">{s.label}</div>
+            <div className="text-slate-500 text-xl">{s.label}</div>
             <div className="flex items-center gap-2">
-              <s.icon className="h-4 w-4 text-slate-400" />
-              <div className="text-xl font-semibold">{s.value}</div>
+              <s.icon className={`h-6 w-6 text-${s.tone}-400`} />
+              <div className={`text-xl font-semibold text-${s.tone}-400`}>
+                {s.value}
+              </div>
             </div>
           </CardContent>
         </Card>

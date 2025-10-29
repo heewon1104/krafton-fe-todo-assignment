@@ -11,9 +11,8 @@ export async function addTodo(input: Omit<Todo, 'id'>) {
 export async function listTodos(filter: 'all' | 'done' | 'progress' = 'all') {
   const db = getDB();
   if (filter === 'all') return db.todos.toArray();
-  if (filter === 'done')
-    return db.todos.filter((t) => t.done === true).toArray();
-  return db.todos.filter((t) => t.done === false).toArray();
+  if (filter === 'done') return db.todos.where({ done: true }).toArray();
+  return db.todos.where({ done: false }).toArray();
 }
 
 // Update

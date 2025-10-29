@@ -51,11 +51,11 @@ export default function TodoDialog({
 
   const toneByPriority: Record<
     '높음' | '중간' | '낮음',
-    'red' | 'orange' | 'green'
+    'red' | 'orange' | 'blue'
   > = {
     높음: 'red',
     중간: 'orange',
-    낮음: 'green',
+    낮음: 'blue',
   };
 
   useEffect(() => {
