@@ -1,6 +1,7 @@
 import { Card, CardContent } from '@/components/ui/card';
+import { parseDue } from '@/utils/date';
 import { useTodoStore } from '@/stores/todoStore';
-
+import { isBefore, startOfToday } from 'date-fns';
 import {
   CalendarDays,
   CheckCircle2,
@@ -14,7 +15,13 @@ export default function StatsCards() {
   const total = todos.length;
   const done = todos.filter((t) => t.done).length;
   const progress = total - done;
-  const late = todos.filter((t) => !t.done).length;
+
+  const todayStart = startOfToday();
+  const late = todos.filter((t) => {
+    if (t.done) return false;
+    const due = parseDue(t.date);
+    return due ? isBefore(due, todayStart) : false;
+  }).length;
 
   const stats = [
     { label: '전체', value: total, icon: CalendarDays },
