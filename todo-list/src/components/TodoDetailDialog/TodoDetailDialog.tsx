@@ -1,3 +1,5 @@
+import { useEffect, useMemo, useState } from 'react';
+import { forceWrapLongRuns } from '@/utils/forceWrapLongRuns';
 import {
   Dialog,
   DialogContent,
@@ -23,12 +25,37 @@ export default function TodoDetailDialog({
   item,
   onEdit,
 }: Props) {
+  const [maxRun, setMaxRun] = useState(48);
+
+  useEffect(() => {
+    const calc = () => {
+      const w = typeof window !== 'undefined' ? window.innerWidth : 1280;
+      const next =
+        w >= 1280 ? 64 : w >= 1024 ? 56 : w >= 768 ? 44 : w >= 640 ? 32 : 24;
+      setMaxRun(next);
+    };
+    calc();
+    if (open) {
+      window.addEventListener('resize', calc);
+      return () => window.removeEventListener('resize', calc);
+    }
+  }, [open]);
+
+  const safeTitle = useMemo(() => {
+    const n = Math.max(8, Math.floor(maxRun * 0.8));
+    return forceWrapLongRuns(item?.title ?? '항목 없음', n);
+  }, [item?.title, maxRun]);
+
+  const safeDesc = useMemo(() => {
+    return forceWrapLongRuns(item?.desc ?? '내용이 없습니다.', maxRun);
+  }, [item?.desc, maxRun]);
+
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="w-[min(92vw,720px)] sm:max-w-2xl rounded-2xl">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
-            <span className="text-lg">{item?.title ?? '항목 없음'}</span>
+            <span className="text-lg">{safeTitle}</span>
             {item && (
               <Badge
                 variant="secondary"
@@ -49,7 +76,7 @@ export default function TodoDetailDialog({
 
         <div className="space-y-4">
           <div className="text-sm text-slate-600 whitespace-pre-wrap">
-            {item?.desc || '내용이 없습니다.'}
+            {safeDesc}
           </div>
           <div className="flex items-center justify-between text-sm text-slate-500">
             <div className="flex items-center gap-1">
