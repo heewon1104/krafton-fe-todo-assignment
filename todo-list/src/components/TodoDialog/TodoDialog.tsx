@@ -26,6 +26,7 @@ import {
 import type { Todo } from '@/types/todo';
 import { Calendar as CalendarIcon, CircleCheck } from 'lucide-react';
 import { format, parse } from 'date-fns';
+import { TITLE_MAX, DESC_MAX } from '@/constants/constants';
 
 type TodoDialogProps = {
   open: boolean;
@@ -99,9 +100,14 @@ export default function TodoDialog({
     onOpenChange(false);
   }
 
-  const descCount = desc.length;
   const titleText = mode === 'edit' ? 'TODO 수정' : 'TODO 생성';
   const submitText = mode === 'edit' ? '수정' : '생성';
+
+  const isTitleValid =
+    title.trim().length > 0 && title.trim().length <= TITLE_MAX;
+  const isDueValid = !!due;
+  const isDescValid = desc.length <= DESC_MAX;
+  const isFormValid = isTitleValid && isDueValid && isDescValid;
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
@@ -109,6 +115,8 @@ export default function TodoDialog({
         <form
           className="flex flex-col max-h-[inherit]"
           onSubmit={(e) => {
+            e.preventDefault();
+            if (!isFormValid) return;
             void onSubmit(e);
           }}
         >
@@ -128,7 +136,9 @@ export default function TodoDialog({
                     id="dueDate"
                     type="button"
                     variant="outline"
-                    className="w-full justify-start text-left font-normal"
+                    className={`w-full justify-start text-left font-normal ${!isDueValid ? 'border-red-300' : ''}`}
+                    aria-invalid={isDueValid ? 'false' : 'true'}
+                    aria-describedby={!isDueValid ? 'due-error' : undefined}
                   >
                     <CalendarIcon className="mr-2 h-4 w-4" />
                     {due ? format(due, 'yyyy. M. d.') : '날짜를 선택해주세요'}
@@ -153,6 +163,11 @@ export default function TodoDialog({
                   />
                 </PopoverContent>
               </Popover>
+              {!isDueValid && (
+                <p id="due-error" className="text-xs text-red-600">
+                  마감일을 선택하세요.
+                </p>
+              )}
             </div>
 
             {/* 우선순위 */}
@@ -185,7 +200,16 @@ export default function TodoDialog({
                 placeholder="제목"
                 value={title}
                 onChange={(e) => setTitle(e.target.value)}
+                maxLength={TITLE_MAX}
+                aria-invalid={isTitleValid ? 'false' : 'true'}
+                aria-describedby="title-count"
               />
+              <div
+                id="title-count"
+                className={`text-xs ${isTitleValid ? 'text-slate-500' : 'text-red-600'}`}
+              >
+                {title.length}/{TITLE_MAX}
+              </div>
             </div>
 
             {/* 내용 */}
@@ -195,12 +219,19 @@ export default function TodoDialog({
               </label>
               <Textarea
                 id="content"
-                maxLength={500}
+                maxLength={DESC_MAX}
                 rows={10}
                 value={desc}
                 onChange={(e) => setDesc(e.target.value)}
+                aria-invalid={isDescValid ? 'false' : 'true'}
+                aria-describedby="desc-count"
               />
-              <div className="text-xs text-slate-500">{descCount}/500</div>
+              <div
+                id="desc-count"
+                className={`text-xs ${isDescValid ? 'text-slate-500' : 'text-red-600'}`}
+              >
+                {desc.length}/{DESC_MAX}
+              </div>
             </div>
           </div>
 
@@ -212,7 +243,7 @@ export default function TodoDialog({
             >
               취소
             </Button>
-            <Button type="submit">
+            <Button type="submit" disabled={!isFormValid}>
               <CircleCheck className="mr-1 h-4 w-4" /> {submitText}
             </Button>
           </DialogFooter>

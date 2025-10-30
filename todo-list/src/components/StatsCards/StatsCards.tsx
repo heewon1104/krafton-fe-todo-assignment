@@ -9,6 +9,13 @@ import {
   AlertTriangle,
 } from 'lucide-react';
 
+const toneText: Record<'blue' | 'green' | 'orange' | 'red', string> = {
+  blue: 'text-blue-600',
+  green: 'text-green-600',
+  orange: 'text-orange-600',
+  red: 'text-red-600',
+};
+
 export default function StatsCards() {
   const todos = useTodoStore((s) => s.todos);
 
@@ -24,27 +31,30 @@ export default function StatsCards() {
   }).length;
 
   const stats = [
-    { label: '전체', value: total, icon: CalendarDays, tone: 'blue' },
-    { label: '완료', value: done, icon: CheckCircle2, tone: 'green' },
-    { label: '진행중', value: progress, icon: Clock4, tone: 'orange' },
-    { label: '지연', value: late, icon: AlertTriangle, tone: 'red' },
+    { label: '전체', value: total, icon: CalendarDays, tone: 'blue' as const },
+    { label: '완료', value: done, icon: CheckCircle2, tone: 'green' as const },
+    { label: '진행중', value: progress, icon: Clock4, tone: 'orange' as const },
+    { label: '지연', value: late, icon: AlertTriangle, tone: 'red' as const },
   ];
 
   return (
     <section className="flex flex-wrap gap-4">
-      {stats.map((s, i) => (
-        <Card key={i} className="rounded-2xl shadow-sm flex-1 min-w-[180px]">
-          <CardContent className="p-4 flex items-center justify-between">
-            <div className="text-slate-500 text-xl">{s.label}</div>
-            <div className="flex items-center gap-2">
-              <s.icon className={`h-6 w-6 text-${s.tone}-400`} />
-              <div className={`text-xl font-semibold text-${s.tone}-400`}>
-                {s.value}
+      {stats.map((s, i) => {
+        const color = toneText[s.tone];
+        return (
+          <Card key={i} className="rounded-2xl shadow-sm flex-1 min-w-[180px]">
+            <CardContent className="p-4 flex items-center justify-between">
+              <div className="text-slate-700 text-xl">{s.label}</div>
+              <div className="flex items-center gap-2">
+                <s.icon aria-hidden="true" className={`h-6 w-6 ${color}`} />
+                <div className={`text-xl font-semibold ${color}`}>
+                  {s.value}
+                </div>
               </div>
-            </div>
-          </CardContent>
-        </Card>
-      ))}
+            </CardContent>
+          </Card>
+        );
+      })}
     </section>
   );
 }

@@ -11,7 +11,7 @@ export default function Header() {
           <div className="h-9 w-9 grid place-items-center rounded-xl bg-indigo-600 text-white shadow-sm">
             <CalendarDays className="h-5 w-5" />
           </div>
-          <span className="font-semibold text-xl">Readdy TODO</span>
+          <span className="font-semibold text-xl">Krafton TODO</span>
         </div>
         <div className="text-sm text-slate-500">{todayStr}</div>
       </div>
