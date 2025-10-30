@@ -3,6 +3,7 @@ import { Checkbox } from '@/components/ui/checkbox';
 import { Badge } from '@/components/ui/badge';
 import { Calendar as CalendarIcon, Pencil, Trash2 } from 'lucide-react';
 import type { Todo } from '@/types/todo';
+import { truncate } from '@/utils/truncate';
 import type { CheckedState } from '@radix-ui/react-checkbox';
 
 type TodoCardProps = {
@@ -25,7 +26,11 @@ export default function TodoItem({
       onClick={() => onView(item)}
       className={[
         'group relative rounded-2xl bg-white shadow-sm ring-1 ring-slate-200 p-4',
-        'w-full md:w-1/2 lg:w-1/3',
+        'flex-none',
+        'w-full',
+        'md:basis-[calc((100%-theme(space.3))/2)]',
+        'lg:basis-[calc((100%-theme(space.3)*2)/3)]',
+        'min-w-0',
         item.tone === 'red' && 'border-l-4 border-red-400',
         item.tone === 'orange' && 'border-l-4 border-orange-300',
         item.tone === 'blue' && 'border-l-4 border-sky-300',
@@ -56,13 +61,14 @@ export default function TodoItem({
             <h3
               className={`font-semibold ${item.done ? 'line-through text-slate-400' : ''}`}
             >
-              {item.title}
+              {truncate(item.title, 10)}
             </h3>
             <div className="flex items-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
               <Button
                 variant="ghost"
                 size="icon"
                 className="h-7 w-7"
+                aria-label="편집"
                 onClick={(e) => {
                   e.stopPropagation();
                   onEdit(item);
@@ -74,6 +80,7 @@ export default function TodoItem({
                 variant="ghost"
                 size="icon"
                 className="h-7 w-7"
+                aria-label="삭제"
                 onClick={(e) => {
                   e.stopPropagation();
                   onDelete(item.id);
@@ -86,7 +93,7 @@ export default function TodoItem({
           <p
             className={`text-sm ${item.done ? 'line-through text-slate-400' : 'text-slate-600'}`}
           >
-            {item.desc}
+            {truncate(item.desc, 30)}
           </p>
           <div className="flex items-center justify-between pt-2">
             <Badge
